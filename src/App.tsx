@@ -52,7 +52,7 @@ function App() {
       <div className="p-6">
         <Routes>
           <Route index element={<Home />} />
-          <Route path="/books" element={<Books />} />
+          <Route path="/books/*" element={<Books />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/issuedbook" element={<IssuedBooks />} />
           <Route path="/members" element={<Members />} />

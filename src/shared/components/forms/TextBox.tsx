@@ -14,7 +14,7 @@ export default function TextBox(props: TextBoxProps){
             <input>
                 placeholder={props.placeholder}
                 value={props.vatue?? ''}
-                {/* onChange={e=> props.onChange?.(e.target.value)} */}
+                <div onClick={(e) => console.log(e)}>Click me</div>
             </input>
         </div>
     );
