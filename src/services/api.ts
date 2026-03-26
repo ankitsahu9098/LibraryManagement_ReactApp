@@ -2,6 +2,23 @@
 export async function get<TResult>(url: string){
     return await request<TResult>('GET', url);
 }
+export async function post<TResult>(url :string, body: unknown  ) {
+    return await request<TResult>('POST',url, body);
+    
+}
+
+export async function put<TResult>(url :string, body: unknown  ) {
+    return await request<TResult>('PUT',url, body);
+    
+}
+export async function patch<TResult>(url :string, body: unknown  ) {
+    return await request<TResult>('PATCH',url, body);
+    
+}
+export async function del<TResult>(url :string) {
+    return await request<TResult>('DELETE',url);
+    
+}
 
 async function request<TResult>(method: string, url: string,body?: unknown){
     const response = await fetch('https://localhost:7007/api/master' + url, {
@@ -9,11 +26,11 @@ async function request<TResult>(method: string, url: string,body?: unknown){
         body: body ? JSON.stringify(body) : undefined,
         headers: {
             Origin: window.location.host,
-            'Content-Type': 'application/json charset=UTF-8',
+            'Content-Type': 'application/json',
         },
     });
 
-    const json = await response.json();
+    const text = await response.text();
 
-    return json as TResult;
+    return text? JSON.parse(text): null;
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ApiService } from "../../../services";
 import Loader from "../../../shared/components/loader";
 import { Grid } from "../../../shared/components/grid";
+import { Link } from "react-router";
 
 
 interface Book {
@@ -32,6 +33,14 @@ export default function List() {
 
   return (
     <div className="overflow-x-auto">
+       <div className="flex justify-end mb-4">
+        <Link
+          to="/books/new"
+          className="bg-blue-900 text-amber-50 px-4 py-2 rounded-md font-semibold hover:bg-yellow-400 transition"
+        >
+          Add New Book
+        </Link>
+      </div>
     <Grid
       data={books}
       columns={[

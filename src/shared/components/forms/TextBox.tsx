@@ -1,7 +1,7 @@
 interface TextBoxProps {
     label: string;
     placeholder?: string;
-    vatue: string;
+    value: string;
     onChange?: (v: string) => void;
 }
 
@@ -13,7 +13,7 @@ export default function TextBox(props: TextBoxProps){
             </label>
             <input>
                 placeholder={props.placeholder}
-                value={props.vatue?? ''}
+                value={props.value?? ''}
                 <div onClick={(e) => console.log(e)}>Click me</div>
             </input>
         </div>

@@ -1,7 +1,39 @@
+import { useParams } from "react-router";
+import { useUpdateBookMutation } from "../queries";
+import { useCallback } from "react";
+import { ApiService } from "../../../services";
+import Form from "../components/Form";
+interface EditRouteParams extends Record<string, string>{
+    bookId: string;
+}
 export default function Edit() {  
+    const { bookId  } = useParams<EditRouteParams>();
+    const {mutateAsync } = useUpdateBookMutation(parseInt(bookId!, 10));
+
+    const handleLoad = useCallback(
+        async function (){
+            const data = await ApiService.get<Master.BookItem>(
+                'master/book/' + bookId
+            );
+            if(!data){
+                return{
+                    id: 0,
+                    name: '',
+                    price: 0,
+                    publisher: '',
+                    auther: ''
+                };
+            }
+            return data;
+        },[bookId]
+            
+    );
     return (
-        <div>
-            Edit Book
-        </div>
+       <Form
+            onLoad={handleLoad}
+            onSubmit={async (data) => {
+                await mutateAsync(data);
+            } }
+            submitCaption="Update" categories={[]}       />
     );
 }

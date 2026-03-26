@@ -2,9 +2,10 @@ declare namespace Master {
 
     interface BookForm {
         name: string;
+        price: number;
         publisher: string;
         author: string;
-        category: string;
+        categoryId: number;
     }
 
     interface BookItem {

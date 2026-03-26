@@ -1,13 +1,11 @@
-import { execFile } from "child_process";
-import { use } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";  
 import { ApiService } from "../../services";
-import { on } from "events";
 
+const QUERY_KEY = ['@master/books'];
 
-const QUERY_KEY = ['@mater/books'];
 
 export function useBooksQuery() { 
-    return useBooksQuery({
+    return useQuery({
         queryKey: QUERY_KEY,
         queryFn: async () => {
             return await ApiService.get<Master.BookItem[]>("master/books");
@@ -15,25 +13,45 @@ export function useBooksQuery() {
     });
 }
 
-export function useNewStateMutation() {
+export function  useNewStateMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+
+    mutationFn: async (book: Master.BookForm) =>
+      await ApiService.post<Master.BookItem>('/books/', book),
+
+    onSuccess: result => {
+      if (!result) {
+        return;
+      }
+      const existing = queryClient.getQueryData<Master.BookItem[]>(QUERY_KEY);
+      if (!existing) {
+        return;
+      }
+      queryClient.setQueryData(QUERY_KEY, [...existing, result]);
+    },
+  });
+}
+
+export function useUpdateBookMutation(bookId: number){
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (data: Master.BookForm) => {
-            await ApiService.post<Master.BookItem>("master/books", data),
-        onSuccess: result => {
+        mutationFn: async(book: Master.BookForm) =>
+            await ApiService.put<Master.BookItem>('/book/'+bookId, book),
+        onSuccess: result =>{
             if(!result){
                 return;
             }
-            const existing  = queryClient.getQueryData<Master.BookItem[]>(QUERY_KEY);                             
-            if(!existing){
+            const existing = queryClient.getQueryData<Master.BookItem[]>(QUERY_KEY);
+            if(!existing ){
                 return;
             }
-            const index = existing.findIndex(b => b.id === result.id);
-            const first = existing.slice(0, index);
-            const last = existing.slice(index + 1);
 
-            queryClient.setQueryData(QUERY_KEY, [...first, result, ...last]);
-        },
-    });
-    }
-    }
+            const index = existing.findIndex(item => item.id === bookId);
+            const first = existing.slice(0, index);
+            const next = existing.slice(index + 1);
+
+            queryClient.setQueryData(QUERY_KEY, [...first, result, ...next]);
+        }
+    })
+}

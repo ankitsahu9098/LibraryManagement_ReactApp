@@ -5,6 +5,7 @@ import Books from "./features/books";
 import Categories from "./features/categories";
 import IssuedBooks from "./features/issuedbooks";
 import Members from "./features/members";
+import Create from "./features/books/pages/Create";
 import logo from "./assets/logo-removebg-preview.png";
 
 
@@ -44,18 +45,20 @@ function App() {
       <Link className="hover:text-yellow-300 transition" to="/members">
         Members
       </Link>
+      
     </div>
 
   </div>
 </nav>
-
       <div className="p-6">
         <Routes>
           <Route index element={<Home />} />
           <Route path="/books/*" element={<Books />} />
-          <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/*" element={<Categories />} />
           <Route path="/issuedbook" element={<IssuedBooks />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/books/new" element={<Create />} /> {/* <-- Add this */}
+
         </Routes>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6 max-w-7xl mx-auto px-6">
