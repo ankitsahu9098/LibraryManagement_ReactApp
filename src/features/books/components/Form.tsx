@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { Button } from "../../../shared/components/buttons";
+import { useEffect } from "react";
 
 interface FormProps {
   onSubmit: (p: Master.BookForm) => Promise<void>;
@@ -16,10 +17,16 @@ export default function Form({
   ...props
 }: FormProps) {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState } = useForm<Master.BookForm>({
+  const { register, handleSubmit, formState, reset  } = useForm<Master.BookForm>({
     defaultValues: {},
   });
-
+useEffect(() => {
+    if (onLoad) {
+      onLoad().then((data) => {
+        reset(data);
+      });
+    }
+  }, [onLoad, reset]);
   return (
     <div>
       <form

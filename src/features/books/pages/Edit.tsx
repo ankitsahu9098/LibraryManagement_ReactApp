@@ -8,20 +8,31 @@ interface EditRouteParams extends Record<string, string>{
 }
 export default function Edit() {  
     const { bookId  } = useParams<EditRouteParams>();
-    const {mutateAsync } = useUpdateBookMutation(parseInt(bookId!, 10));
+    const {mutateAsync } = useUpdateBookMutation(parseInt(bookId ?? "0", 10));
 
     const handleLoad = useCallback(
         async function (){
+            if(!bookId){
+                return{
+                    id: 0,
+                    name:"",
+                    price:0,
+                    publisher: "",
+                    author: "",
+                    categoryId: 0,
+                }
+            }
             const data = await ApiService.get<Master.BookItem>(
-                'master/book/' + bookId
+                '/books/' + bookId
             );
+            console.log(data);
             if(!data){
                 return{
                     id: 0,
                     name: '',
                     price: 0,
                     publisher: '',
-                    auther: ''
+                    author: ''
                 };
             }
             return data;
@@ -34,6 +45,6 @@ export default function Edit() {
             onSubmit={async (data) => {
                 await mutateAsync(data);
             } }
-            submitCaption="Update" categories={[]}       />
+            submitCaption="Update" categories={[]}/>
     );
 }

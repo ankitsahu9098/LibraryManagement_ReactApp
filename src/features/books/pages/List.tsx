@@ -3,6 +3,8 @@ import { ApiService } from "../../../services";
 import Loader from "../../../shared/components/loader";
 import { Grid } from "../../../shared/components/grid";
 import { Link } from "react-router";
+import { useNavigate } from "react-router";
+import { useBooksQuery, useRemoveBookMutation } from "../queries";
 
 
 interface Book {
@@ -14,20 +16,23 @@ interface Book {
 }
 
 export default function List() {
-  const [loading, setLoading] = useState(true);
-  const [books, setBooks] = useState<Book[]>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [books, setBooks] = useState<Book[]>([]);
+  const {data=[], isLoading} =useBooksQuery();
+  const {isPending, mutateAsync }= useRemoveBookMutation(0);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    ApiService.get<Book[]>("/books")
-      .then(setBooks)
-      .finally(() => setLoading(false));
-  }, []);
+  // useEffect(() => {
+  //   ApiService.get<Book[]>("/books")
+  //     .then(setBooks)
+  //     .finally(() => setLoading(false));
+  // }, []);
 
-  if (loading) {
+  if (isLoading || isPending ) {
     return <Loader />;
   }
 
-  if (books.length === 0) {
+  if (data.length === 0) {
     return <div>No Books found.</div>;
   }
 
@@ -42,7 +47,7 @@ export default function List() {
         </Link>
       </div>
     <Grid
-      data={books}
+      data={data}
       columns={[
         {
           field: "name",
@@ -65,15 +70,20 @@ export default function List() {
           actions: [
             {
               caption: "Edit",
-              onClick: (b) => {
-                console.log("Edit", b);
+              onClick: async data =>
+              {
+                navigate(`../edit/${data.id}`);
+                
+              
               },
             },
             {
               caption: "Delete",
-              onClick: (b) => {
-                console.log("Delete", b);
-              },
+              onClick: async data => {
+                if (window.confirm("Are you sure you want to delete?")){
+                await mutateAsync(data.id);
+                navigate('/books')
+              }},
             },
           ],
         },

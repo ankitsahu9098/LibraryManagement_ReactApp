@@ -1,11 +1,11 @@
 import { Navigate, useNavigate } from "react-router";
 import Form from "../components/Form";
-import { useNewStateMutation } from "../queries";
+import { useNewBookMutation } from "../queries";
 import { useEffect, useState } from "react";
 import { ApiService } from "../../../services";
 
 export default function Create() {
-  const { mutateAsync } = useNewStateMutation();
+  const { mutateAsync } = useNewBookMutation();
   const navigate = useNavigate();
   // const [categories, setCategories] = useState<string[]>([]);
   const [categories, setCategories] = useState<Master.CategoryItem[]>([]);
@@ -23,7 +23,7 @@ export default function Create() {
   return (
     <Form
       submitCaption="Create"
-categories={categories}
+      categories={categories}
       onSubmit={async (state) => {
         await mutateAsync(state);
         navigate("/books");

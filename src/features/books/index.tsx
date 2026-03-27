@@ -1,13 +1,16 @@
 import { Navigate, Route, Routes } from "react-router"
 import List from "./pages/List";
 import Create from "./pages/Create";
+import Edit from "./pages/Edit";
 
 export default function Books() {
   return (
   <Routes>
     <Route index element={<Navigate to="books" />} />
     <Route path="books" element={<List />} />
-    <Route path="create" element={<Create />} />
+    <Route path="new" element={<Create />} />
+    <Route path="edit/:bookId" element={<Edit />} />
+
   </Routes>
   );
 };

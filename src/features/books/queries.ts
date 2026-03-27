@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";  
 import { ApiService } from "../../services";
+import { use } from "react";
 
 const QUERY_KEY = ['@master/books'];
 
@@ -8,12 +9,12 @@ export function useBooksQuery() {
     return useQuery({
         queryKey: QUERY_KEY,
         queryFn: async () => {
-            return await ApiService.get<Master.BookItem[]>("master/books");
+            return await ApiService.get<Master.BookItem[]>('/books/');
     },  
     });
 }
 
-export function  useNewStateMutation() {
+export function  useNewBookMutation() {
   const queryClient = useQueryClient();
   return useMutation({
 
@@ -37,7 +38,7 @@ export function useUpdateBookMutation(bookId: number){
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async(book: Master.BookForm) =>
-            await ApiService.put<Master.BookItem>('/book/'+bookId, book),
+            await ApiService.put<Master.BookItem>('/books/'+ bookId, book),
         onSuccess: result =>{
             if(!result){
                 return;
@@ -54,4 +55,20 @@ export function useUpdateBookMutation(bookId: number){
             queryClient.setQueryData(QUERY_KEY, [...first, result, ...next]);
         }
     })
+}
+
+export function useRemoveBookMutation(bookId: number){
+  const queryClient = useQueryClient();
+  const rs =  useMutation({
+    mutationFn: (id: number) => ApiService.del('/books/'+ id),
+    onSuccess: (_, id) => {
+      const data  = queryClient.getQueryData<Master.BookItem[]>([QUERY_KEY]);
+      if(!data){
+        return;
+      }
+      const newData = data.filter(item => item.id !== id  );
+      queryClient.setQueryData(QUERY_KEY, newData);
+    },
+  });
+  return  rs;
 }

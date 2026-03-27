@@ -57,7 +57,7 @@ function App() {
           <Route path="/categories/*" element={<Categories />} />
           <Route path="/issuedbook" element={<IssuedBooks />} />
           <Route path="/members" element={<Members />} />
-          <Route path="/books/new" element={<Create />} /> {/* <-- Add this */}
+          {/* <Route path="/books/new" element={<Create />} /> */}
 
         </Routes>
       </div>
